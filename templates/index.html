@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Threat Detection & Spam Classification</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🛡️ Email Threat Detection System</h1>
+                <p>Intelligent Spam Classification using Deep Learning</p>
+            </div>
+            <div class="status-indicator" id="statusIndicator">
+                <span class="status-dot"></span>
+                <span class="status-text">Initializing...</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Single Email Classification -->
+            <section class="section">
+                <h2 class="section-title">📧 Analyze Email</h2>
+                
+                <div class="input-group">
+                    <label for="emailInput">Enter Email/SMS Message:</label>
+                    <textarea 
+                        id="emailInput" 
+                        class="email-input" 
+                        placeholder="Paste your email or SMS message here...
+Example: 'FREE MONEY! You have won £1000. Click here now!'"
+                        rows="6"></textarea>
+                    <div class="character-count">
+                        <span id="charCount">0</span> / 5000 characters
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="classifyBtn" class="btn btn-primary" onclick="classifyEmail()">
+                        <span class="btn-icon">⚡</span> Analyze Message
+                    </button>
+                    <button id="clearBtn" class="btn btn-secondary" onclick="clearInput()">
+                        <span class="btn-icon">🗑️</span> Clear
+                    </button>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Analyzing message...</p>
+                </div>
+
+                <!-- Result Section -->
+                <div id="resultSection" class="result-section" style="display: none;">
+                    <div class="result-header">
+                        <h3>Analysis Result</h3>
+                        <button class="close-btn" onclick="clearResult()">×</button>
+                    </div>
+
+                    <div id="resultContent" class="result-content">
+                        <!-- Classification Badge -->
+                        <div class="classification-badge" id="classificationBadge"></div>
+
+                        <!-- Main Metrics -->
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-label">Classification</div>
+                                <div class="metric-value" id="classLabel"></div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Confidence Score</div>
+                                <div class="metric-value" id="confidenceScore"></div>
+                            </div>
+                            <div class="metric-card">
+                                <div class="metric-label">Threat Level</div>
+                                <div class="metric-value threat" id="threatLevel"></div>
+                            </div>
+                        </div>
+
+                        <!-- Probability Visualization -->
+                        <div class="probability-section">
+                            <h4>Classification Probabilities</h4>
+                            <div class="probability-chart">
+                                <div class="probability-bar">
+                                    <div class="label">Ham (Legitimate)</div>
+                                    <div class="bar-container">
+                                        <div class="bar ham-bar" id="hamBar"></div>
+                                        <span class="percentage" id="hamPercent"></span>
+                                    </div>
+                                </div>
+                                <div class="probability-bar">
+                                    <div class="label">Spam (Threat)</div>
+                                    <div class="bar-container">
+                                        <div class="bar spam-bar" id="spamBar"></div>
+                                        <span class="percentage" id="spamPercent"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommendation -->
+                        <div class="recommendation-box" id="recommendationBox">
+                            <h4>🎯 Recommendation</h4>
+                            <p id="recommendationText"></p>
+                        </div>
+
+                        <!-- Message Analysis -->
+                        <div class="analysis-section">
+                            <h4>📊 Message Analysis</h4>
+                            <div class="analysis-grid" id="analysisGrid"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Batch Analysis -->
+            <section class="section">
+                <h2 class="section-title">📨 Batch Analysis</h2>
+                
+                <div class="input-group">
+                    <label for="batchInput">Enter Multiple Messages (one per line):</label>
+                    <textarea 
+                        id="batchInput" 
+                        class="email-input" 
+                        placeholder="Line 1: First message
+Line 2: Second message
+Line 3: Third message
+..."
+                        rows="6"></textarea>
+                    <div class="character-count">
+                        <span id="batchCharCount">0</span> / 25000 characters
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="batchBtn" class="btn btn-primary" onclick="batchClassify()">
+                        <span class="btn-icon">⚡</span> Analyze All
+                    </button>
+                    <button id="batchClearBtn" class="btn btn-secondary" onclick="clearBatchInput()">
+                        <span class="btn-icon">🗑️</span> Clear
+                    </button>
+                </div>
+
+                <!-- Batch Loading Spinner -->
+                <div id="batchLoadingSpinner" class="loading-spinner" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Analyzing messages...</p>
+                </div>
+
+                <!-- Batch Results -->
+                <div id="batchResultSection" class="result-section" style="display: none;">
+                    <div class="result-header">
+                        <h3>Batch Analysis Results</h3>
+                        <button class="close-btn" onclick="clearBatchResult()">×</button>
+                    </div>
+
+                    <!-- Statistics -->
+                    <div class="statistics-grid" id="statisticsGrid"></div>
+
+                    <!-- Results Table -->
+                    <div class="table-container">
+                        <table class="results-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Message</th>
+                                    <th>Classification</th>
+                                    <th>Confidence</th>
+                                    <th>Threat Level</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Model Information -->
+            <section class="section info-section">
+                <h2 class="section-title">ℹ️ Model Information</h2>
+                <div id="modelInfo" class="info-content">
+                    <div class="loading">Loading model information...</div>
+                </div>
+                
+                <!-- Evaluation Metrics Section -->
+                <div id="evaluationSection" style="display: none; margin-top: 30px;">
+                    <h3 style="color: #2563eb; margin-bottom: 20px;">📊 Model Evaluation Metrics</h3>
+                    <div class="metrics-grid" id="evaluationMetrics"></div>
+                    <div id="confusionMatrixContainer" style="margin-top: 25px;"></div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2024 Email Threat Detection System | Powered by Feed Forward Neural Network</p>
+            <p class="tech-stack">Tech Stack: Python • NumPy • Scikit-learn • Flask • JavaScript</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
