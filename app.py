@@ -286,16 +286,19 @@ def before_request():
         if request.endpoint != 'health_check':
             pass  # Will be handled in individual routes
 
+# Load model on startup
+print("Loading Email Threat Detection Model...")
+load_model()
+
 if __name__ == '__main__':
-    print("Loading Email Threat Detection Model...")
-    if load_model():
-        print("Starting Flask application...")
-        app.run(
-            debug=True,
-            host='0.0.0.0',
-            port=5000,
-            use_reloader=False
-        )
-    else:
+    if model is None:
         print("Failed to load model. Please train the model first using: python model.py")
         sys.exit(1)
+    
+    print("Starting Flask application...")
+    app.run(
+        debug=True,
+        host='0.0.0.0',
+        port=5000,
+        use_reloader=False
+    )
