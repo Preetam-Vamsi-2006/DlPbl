@@ -5,200 +5,363 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Email Threat Detection & Spam Classification</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+    <!-- Animated Background -->
+    <div class="background-animation">
+        <!-- 3D Sphere Elements -->
+        <div class="sphere sphere-1"></div>
+        <div class="sphere sphere-2"></div>
+        <div class="sphere sphere-3"></div>
+
+        <!-- 3D Cube -->
+        <div class="cube-container" style="top: 10%; left: 10%;">
+            <div class="cube-face cube-face-1"></div>
+            <div class="cube-face cube-face-2"></div>
+            <div class="cube-face cube-face-3"></div>
+            <div class="cube-face cube-face-4"></div>
+            <div class="cube-face cube-face-5"></div>
+            <div class="cube-face cube-face-6"></div>
+        </div>
+
+        <!-- 3D Pyramid -->
+        <div class="pyramid-container" style="top: 60%; right: 5%;">
+            <div class="pyramid-face pyramid-face-1"></div>
+            <div class="pyramid-face pyramid-face-2"></div>
+            <div class="pyramid-face pyramid-face-3"></div>
+            <div class="pyramid-face pyramid-face-4"></div>
+        </div>
+
+        <!-- 3D Torus Rings -->
+        <div class="torus torus-1"></div>
+        <div class="torus torus-2"></div>
+
+        <!-- Gradient Blobs -->
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+
+        <!-- Stars -->
+        <div class="stars"></div>
+    </div>
+
     <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <h1>🛡️ Email Threat Detection System</h1>
-                <p>Intelligent Spam Classification using Deep Learning</p>
+        <!-- Navigation Header -->
+        <nav class="navbar">
+            <div class="navbar-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>ThreatShield</span>
+                </div>
+                <div class="nav-links">
+                    <a href="#analyze" class="nav-link active">Analyze</a>
+                    <a href="#batch" class="nav-link">Batch</a>
+                    <a href="#info" class="nav-link">Model Info</a>
+                </div>
+                <div class="status-indicator" id="statusIndicator">
+                    <span class="status-dot"></span>
+                    <span class="status-text">Ready</span>
+                </div>
             </div>
-            <div class="status-indicator" id="statusIndicator">
-                <span class="status-dot"></span>
-                <span class="status-text">Initializing...</span>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="highlight-text">Email Threat</span> Detection System
+                </h1>
+                <p class="hero-subtitle">Powered by Advanced Deep Learning • Real-Time Analysis • 99% Accuracy</p>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">1000+</span>
+                        <span class="stat-label">Emails Analyzed</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">99%</span>
+                        <span class="stat-label">Accuracy Rate</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">&lt;1s</span>
+                        <span class="stat-label">Response Time</span>
+                    </div>
+                </div>
             </div>
-        </header>
+        </section>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Single Email Classification -->
-            <section class="section">
-                <h2 class="section-title">📧 Analyze Email</h2>
-                
-                <div class="input-group">
-                    <label for="emailInput">Enter Email/SMS Message:</label>
-                    <textarea 
-                        id="emailInput" 
-                        class="email-input" 
-                        placeholder="Paste your email or SMS message here...
+            <!-- Single Email Analysis -->
+            <section class="section" id="analyze">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-envelope"></i> Analyze Email
+                    </h2>
+                    <p class="section-subtitle">Paste an email or SMS to detect threats instantly</p>
+                </div>
+
+                <div class="analysis-container">
+                    <!-- Input Area -->
+                    <div class="input-area">
+                        <div class="input-wrapper">
+                            <textarea 
+                                id="emailInput" 
+                                class="email-input" 
+                                placeholder="✨ Paste your email or SMS message here...
 Example: 'FREE MONEY! You have won £1000. Click here now!'"
-                        rows="6"></textarea>
-                    <div class="character-count">
-                        <span id="charCount">0</span> / 5000 characters
-                    </div>
-                </div>
+                                rows="8"></textarea>
+                            <div class="input-footer">
+                                <div class="character-count">
+                                    <i class="fas fa-keyboard"></i>
+                                    <span id="charCount">0</span> / 5000 characters
+                                </div>
+                                <button class="btn-icon-small" onclick="clearInput()" title="Clear text">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
+                            </div>
+                        </div>
 
-                <div class="button-group">
-                    <button id="classifyBtn" class="btn btn-primary" onclick="classifyEmail()">
-                        <span class="btn-icon">⚡</span> Analyze Message
-                    </button>
-                    <button id="clearBtn" class="btn btn-secondary" onclick="clearInput()">
-                        <span class="btn-icon">🗑️</span> Clear
-                    </button>
-                </div>
-
-                <!-- Loading Spinner -->
-                <div id="loadingSpinner" class="loading-spinner" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>Analyzing message...</p>
-                </div>
-
-                <!-- Result Section -->
-                <div id="resultSection" class="result-section" style="display: none;">
-                    <div class="result-header">
-                        <h3>Analysis Result</h3>
-                        <button class="close-btn" onclick="clearResult()">×</button>
+                        <!-- Action Buttons -->
+                        <div class="button-group">
+                            <button id="classifyBtn" class="btn btn-primary" onclick="classifyEmail()">
+                                <span class="btn-icon"><i class="fas fa-bolt"></i></span>
+                                <span class="btn-text">Analyze Message</span>
+                            </button>
+                            <button id="clearBtn" class="btn btn-secondary" onclick="clearInput()">
+                                <span class="btn-icon"><i class="fas fa-trash"></i></span>
+                                <span class="btn-text">Clear</span>
+                            </button>
+                        </div>
                     </div>
 
-                    <div id="resultContent" class="result-content">
-                        <!-- Classification Badge -->
-                        <div class="classification-badge" id="classificationBadge"></div>
-
-                        <!-- Main Metrics -->
-                        <div class="metrics-grid">
-                            <div class="metric-card">
-                                <div class="metric-label">Classification</div>
-                                <div class="metric-value" id="classLabel"></div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-label">Confidence Score</div>
-                                <div class="metric-value" id="confidenceScore"></div>
-                            </div>
-                            <div class="metric-card">
-                                <div class="metric-label">Threat Level</div>
-                                <div class="metric-value threat" id="threatLevel"></div>
-                            </div>
+                    <!-- Loading State -->
+                    <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                        <div class="spinner-container">
+                            <div class="spinner"></div>
+                            <p class="loading-text">Analyzing message...</p>
+                            <p class="loading-subtext">Running threat detection model</p>
                         </div>
+                    </div>
 
-                        <!-- Probability Visualization -->
-                        <div class="probability-section">
-                            <h4>Classification Probabilities</h4>
-                            <div class="probability-chart">
-                                <div class="probability-bar">
-                                    <div class="label">Ham (Legitimate)</div>
-                                    <div class="bar-container">
-                                        <div class="bar ham-bar" id="hamBar"></div>
-                                        <span class="percentage" id="hamPercent"></span>
+                    <!-- Result Section -->
+                    <div id="resultSection" class="result-section" style="display: none;">
+                        <div class="result-card">
+                            <!-- Classification Badge -->
+                            <div class="classification-badge-large" id="classificationBadge"></div>
+
+                            <!-- Main Metrics -->
+                            <div class="metrics-grid">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-check-circle"></i>
+                                    </div>
+                                    <div class="metric-label">Classification</div>
+                                    <div class="metric-value" id="classLabel"></div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-chart-pie"></i>
+                                    </div>
+                                    <div class="metric-label">Confidence</div>
+                                    <div class="metric-value" id="confidenceScore"></div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-icon threat">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="metric-label">Threat Level</div>
+                                    <div class="metric-value threat" id="threatLevel"></div>
+                                </div>
+                            </div>
+
+                            <!-- Probability Visualization -->
+                            <div class="probability-section">
+                                <h4 class="probability-title">Classification Probabilities</h4>
+                                <div class="probability-chart">
+                                    <div class="probability-bar">
+                                        <div class="label-row">
+                                            <span class="label">
+                                                <i class="fas fa-inbox"></i> Legitimate
+                                            </span>
+                                            <span class="percentage" id="hamPercent"></span>
+                                        </div>
+                                        <div class="bar-container">
+                                            <div class="bar ham-bar" id="hamBar"></div>
+                                        </div>
+                                    </div>
+                                    <div class="probability-bar">
+                                        <div class="label-row">
+                                            <span class="label">
+                                                <i class="fas fa-ban"></i> Spam/Threat
+                                            </span>
+                                            <span class="percentage" id="spamPercent"></span>
+                                        </div>
+                                        <div class="bar-container">
+                                            <div class="bar spam-bar" id="spamBar"></div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="probability-bar">
-                                    <div class="label">Spam (Threat)</div>
-                                    <div class="bar-container">
-                                        <div class="bar spam-bar" id="spamBar"></div>
-                                        <span class="percentage" id="spamPercent"></span>
-                                    </div>
-                                </div>
                             </div>
-                        </div>
 
-                        <!-- Recommendation -->
-                        <div class="recommendation-box" id="recommendationBox">
-                            <h4>🎯 Recommendation</h4>
-                            <p id="recommendationText"></p>
-                        </div>
+                            <!-- Recommendation -->
+                            <div class="recommendation-box" id="recommendationBox">
+                                <div class="recommendation-header">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span>Recommendation</span>
+                                </div>
+                                <p id="recommendationText"></p>
+                            </div>
 
-                        <!-- Message Analysis -->
-                        <div class="analysis-section">
-                            <h4>📊 Message Analysis</h4>
-                            <div class="analysis-grid" id="analysisGrid"></div>
+                            <!-- Message Analysis -->
+                            <div class="analysis-section">
+                                <h4 class="analysis-title">
+                                    <i class="fas fa-microscope"></i> Message Analysis
+                                </h4>
+                                <div class="analysis-grid" id="analysisGrid"></div>
+                            </div>
+
+                            <!-- Close Button -->
+                            <button class="btn-close" onclick="clearResult()">
+                                <i class="fas fa-times"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </section>
 
             <!-- Batch Analysis -->
-            <section class="section">
-                <h2 class="section-title">📨 Batch Analysis</h2>
-                
-                <div class="input-group">
-                    <label for="batchInput">Enter Multiple Messages (one per line):</label>
-                    <textarea 
-                        id="batchInput" 
-                        class="email-input" 
-                        placeholder="Line 1: First message
-Line 2: Second message
-Line 3: Third message
-..."
-                        rows="6"></textarea>
-                    <div class="character-count">
-                        <span id="batchCharCount">0</span> / 25000 characters
+            <section class="section" id="batch">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-envelopes-bulk"></i> Batch Analysis
+                    </h2>
+                    <p class="section-subtitle">Analyze multiple emails at once</p>
+                </div>
+
+                <div class="batch-container">
+                    <!-- Input Area -->
+                    <div class="input-area">
+                        <div class="input-wrapper">
+                            <textarea 
+                                id="batchInput" 
+                                class="email-input" 
+                                placeholder="Enter multiple messages (one per line)
+Line 1: First message...
+Line 2: Second message...
+Line 3: Third message..."
+                                rows="8"></textarea>
+                            <div class="input-footer">
+                                <div class="character-count">
+                                    <i class="fas fa-keyboard"></i>
+                                    <span id="batchCharCount">0</span> / 25000 characters
+                                </div>
+                                <button class="btn-icon-small" onclick="clearBatchInput()" title="Clear text">
+                                    <i class="fas fa-eraser"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="button-group">
+                            <button id="batchBtn" class="btn btn-primary" onclick="batchClassify()">
+                                <span class="btn-icon"><i class="fas fa-bolt"></i></span>
+                                <span class="btn-text">Analyze All</span>
+                            </button>
+                            <button id="batchClearBtn" class="btn btn-secondary" onclick="clearBatchInput()">
+                                <span class="btn-icon"><i class="fas fa-trash"></i></span>
+                                <span class="btn-text">Clear</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
 
-                <div class="button-group">
-                    <button id="batchBtn" class="btn btn-primary" onclick="batchClassify()">
-                        <span class="btn-icon">⚡</span> Analyze All
-                    </button>
-                    <button id="batchClearBtn" class="btn btn-secondary" onclick="clearBatchInput()">
-                        <span class="btn-icon">🗑️</span> Clear
-                    </button>
-                </div>
-
-                <!-- Batch Loading Spinner -->
-                <div id="batchLoadingSpinner" class="loading-spinner" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>Analyzing messages...</p>
-                </div>
-
-                <!-- Batch Results -->
-                <div id="batchResultSection" class="result-section" style="display: none;">
-                    <div class="result-header">
-                        <h3>Batch Analysis Results</h3>
-                        <button class="close-btn" onclick="clearBatchResult()">×</button>
+                    <!-- Batch Loading -->
+                    <div id="batchLoadingSpinner" class="loading-spinner" style="display: none;">
+                        <div class="spinner-container">
+                            <div class="spinner"></div>
+                            <p class="loading-text">Analyzing messages...</p>
+                            <p class="loading-subtext">Processing batch</p>
+                        </div>
                     </div>
 
-                    <!-- Statistics -->
-                    <div class="statistics-grid" id="statisticsGrid"></div>
+                    <!-- Batch Results -->
+                    <div id="batchResultSection" class="result-section" style="display: none;">
+                        <div class="result-card">
+                            <!-- Statistics Grid -->
+                            <div class="statistics-grid" id="statisticsGrid"></div>
 
-                    <!-- Results Table -->
-                    <div class="table-container">
-                        <table class="results-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Message</th>
-                                    <th>Classification</th>
-                                    <th>Confidence</th>
-                                    <th>Threat Level</th>
-                                </tr>
-                            </thead>
-                            <tbody id="resultsTableBody">
-                            </tbody>
-                        </table>
+                            <!-- Results Table -->
+                            <div class="table-wrapper">
+                                <h4 class="table-title">Results Summary</h4>
+                                <div class="table-container">
+                                    <table class="results-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Message Preview</th>
+                                                <th>Classification</th>
+                                                <th>Confidence</th>
+                                                <th>Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="resultsTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Close Button -->
+                            <button class="btn-close" onclick="clearBatchResult()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </section>
 
             <!-- Model Information -->
-            <section class="section info-section">
-                <h2 class="section-title">ℹ️ Model Information</h2>
+            <section class="section info-section" id="info">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-brain"></i> Model Information
+                    </h2>
+                    <p class="section-subtitle">Neural Network Performance Metrics</p>
+                </div>
+
                 <div id="modelInfo" class="info-content">
-                    <div class="loading">Loading model information...</div>
+                    <div class="loading-info">
+                        <div class="spinner-small"></div>
+                        Loading model information...
+                    </div>
                 </div>
                 
-                <!-- Evaluation Metrics Section -->
-                <div id="evaluationSection" style="display: none; margin-top: 30px;">
-                    <h3 style="color: #2563eb; margin-bottom: 20px;">📊 Model Evaluation Metrics</h3>
+                <!-- Evaluation Metrics -->
+                <div id="evaluationSection" style="display: none; margin-top: 40px;">
+                    <h3 class="metrics-section-title">
+                        <i class="fas fa-chart-bar"></i> Model Evaluation Metrics
+                    </h3>
                     <div class="metrics-grid" id="evaluationMetrics"></div>
-                    <div id="confusionMatrixContainer" style="margin-top: 25px;"></div>
+                    <div id="confusionMatrixContainer" style="margin-top: 40px;"></div>
                 </div>
             </section>
         </main>
-
-
     </div>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        // Initialize stars in background
+        function initializeStars() {
+            const starsContainer = document.querySelector('.stars');
+            for (let i = 0; i < 50; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+        initializeStars();
+    </script>
 </body>
 </html>

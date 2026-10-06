@@ -378,37 +378,64 @@ function displayConfusionMatrix(matrix, classes) {
     if (!matrix || matrix.length === 0) return;
     
     let html = `
-        <div style="background: #f3f4f6; padding: 15px; border-radius: 8px;">
-            <h4 style="margin-bottom: 15px; color: #1e293b;">Confusion Matrix</h4>
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr style="background: #e5e7eb;">
-                        <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center;">Predicted →</th>
+        <div class="confusion-matrix-container">
+            <div class="confusion-matrix-title">
+                <i class="fas fa-table"></i>
+                Confusion Matrix
+            </div>
+            <div style="overflow-x: auto;">
+                <table class="confusion-matrix">
+                    <thead>
+                        <tr>
+                            <th class="matrix-corner">PREDICTED →</th>
     `;
     
     // Header row
     for (let j = 0; j < classes.length; j++) {
-        html += `<th style="padding: 10px; border: 1px solid #d1d5db; text-align: center;"><strong>${classes[j].toUpperCase()}</strong></th>`;
+        const headerClass = classes[j].toLowerCase() === 'ham' ? 'matrix-header-ham' : 'matrix-header-spam';
+        html += `<th class="${headerClass}">${classes[j].toUpperCase()}</th>`;
     }
     html += `</tr></thead><tbody>`;
     
     // Data rows
     for (let i = 0; i < matrix.length; i++) {
-        html += `<tr>
-            <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; background: #f9fafb;"><strong>${classes[i].toUpperCase()}</strong></th>`;
+        html += `<tr>`;
+        const labelClass = classes[i].toLowerCase() === 'ham' ? 'matrix-label-ham' : 'matrix-label-spam';
+        html += `<td class="${labelClass}">${classes[i].toUpperCase()}</td>`;
+        
         for (let j = 0; j < matrix[i].length; j++) {
             const value = matrix[i][j];
-            const bgColor = i === j ? '#d1fae5' : '#fef3c7';
-            html += `<td style="padding: 10px; border: 1px solid #d1d5db; text-align: center; background: ${bgColor}; font-weight: bold;">${value}</td>`;
+            let cellClass = 'matrix-cell ';
+            
+            // Diagonal = correct predictions, off-diagonal = incorrect predictions
+            if (i === j) {
+                // Correct predictions
+                if (classes[i].toLowerCase() === 'ham') {
+                    cellClass = 'matrix-tn'; // True Negative
+                } else {
+                    cellClass = 'matrix-tp'; // True Positive
+                }
+            } else {
+                // Incorrect predictions
+                if (classes[i].toLowerCase() === 'ham') {
+                    cellClass = 'matrix-fp'; // False Positive
+                } else {
+                    cellClass = 'matrix-fn'; // False Negative
+                }
+            }
+            
+            html += `<td class="${cellClass}">${value}</td>`;
         }
         html += `</tr>`;
     }
     
     html += `</tbody></table>
-        <p style="margin-top: 10px; font-size: 0.9rem; color: #64748b;">
-            <strong>Note:</strong> Green cells = correct predictions (True Positives/Negatives), Yellow cells = incorrect predictions
-        </p>
-    </div>`;
+            </div>
+            <div class="matrix-note">
+                <strong>✓ Correct Predictions (Green & Cyan):</strong> True Positives (Spam correctly identified) & True Negatives (Ham correctly identified)<br>
+                <strong>✗ Incorrect Predictions (Orange & Pink):</strong> False Positives (Ham marked as Spam) & False Negatives (Spam marked as Ham)
+            </div>
+        </div>`;
     
     container.innerHTML = html;
 }
